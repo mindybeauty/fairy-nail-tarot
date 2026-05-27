@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>仙女下凡 · 美甲神諭</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Noto+Serif+TC:wght@300;400;500&family=Pinyon+Script&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FBF7F2;--ivory:#F5EDE0;--blush:#F0DDD0;
+  --rg:#C8956A;--rg-light:#E8B898;--rg-glow:rgba(200,149,106,.28);
+  --dusty:#D48080;--gold:#C8A050;
+  --dark:#3D2B20;--med:#7A6458;--muted:#A09088;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;overflow-x:hidden;}
+body{background:var(--cream);color:var(--dark);font-family:'Noto Serif TC',serif;min-height:100vh;overflow-x:hidden;}
+
+.bg-layer{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 65% 55% at 15% 80%,rgba(240,200,175,.22) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 60% at 82% 18%,rgba(205,185,225,.16) 0%,transparent 55%),
+    radial-gradient(ellipse 80% 38% at 50% 105%,rgba(245,220,200,.28) 0%,transparent 50%),
+    linear-gradient(165deg,#FDF9F5 0%,#F8F0E8 45%,#F4EAE0 100%);
+}
+#petalCanvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+
+.page{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:52px 22px 80px;display:flex;flex-direction:column;align-items:center;gap:32px;}
+
+/* HEADER */
+.header{text-align:center;animation:fadeDown 1.4s cubic-bezier(.22,1,.36,1) both;}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-22px);}to{opacity:1;transform:translateY(0);}}
+.header-script{display:block;font-family:'Pinyon Script',cursive;font-size:1.4rem;color:var(--rg);letter-spacing:.25em;margin-bottom:6px;opacity:.75;}
+.header h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.3rem,6vw,3.9rem);font-weight:300;font-style:italic;color:var(--dark);letter-spacing:.07em;line-height:1.1;}
+.header h1 .dot{color:var(--rg);}
+.header-sub{margin-top:9px;font-size:.73rem;color:var(--muted);letter-spacing:.42em;font-weight:300;}
+.ornament{display:flex;align-items:center;gap:14px;margin:14px auto 0;max-width:300px;color:var(--rg-light);font-size:.8rem;}
+.ornament::before,.ornament::after{content:'';flex:1;height:1px;background:linear-gradient(to right,transparent,var(--rg-light),transparent);}
+
+/* INSTRUCTION */
+.instr{text-align:center;font-size:.86rem;color:var(--med);letter-spacing:.2em;line-height:1.95;font-weight:300;animation:fadeDown 1.2s ease .4s both;}
+.instr em{color:var(--rg);font-style:italic;}
+
+/* CARD */
+.card-stage{display:flex;flex-direction:column;align-items:center;gap:22px;animation:fadeDown 1.2s ease .6s both;}
+.card-wrap{width:195px;aspect-ratio:2/3.45;perspective:1200px;cursor:pointer;touch-action:manipulation;}
+.card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.4,0,.2,1);}
+.card-inner.flipped{transform:rotateY(180deg);}
+.card-face{position:absolute;inset:0;border-radius:16px;backface-visibility:hidden;overflow:hidden;}
+
+/* BACK */
+.card-back{
+  background:linear-gradient(155deg,#FCF6EE 0%,#F6E9D9 60%,#F1E0CA 100%);
+  border:1.5px solid rgba(200,149,106,.32);
+  box-shadow:0 0 0 1px rgba(200,149,106,.09),inset 0 0 28px rgba(200,149,106,.07),0 18px 55px rgba(60,40,20,.14),0 6px 18px rgba(60,40,20,.09);
+  display:flex;align-items:center;justify-content:center;
+  transition:box-shadow .3s,transform .3s;
+}
+.card-back:hover{
+  box-shadow:0 0 0 1.5px rgba(200,149,106,.48),inset 0 0 38px rgba(200,149,106,.12),0 22px 65px rgba(60,40,20,.18),0 8px 28px rgba(60,40,20,.11);
+  transform:translateY(-5px) scale(1.01);
+}
+.back-inner{width:84%;height:90%;border:1px solid rgba(200,149,106,.22);border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px 10px;position:relative;overflow:hidden;}
+.back-inner::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(200,149,106,.07) 1px,transparent 1px);background-size:13px 13px;}
+.back-corner{position:absolute;font-size:.5rem;color:rgba(200,149,106,.38);font-family:'Cormorant Garamond',serif;letter-spacing:.05em;}
+.back-corner.tl{top:7px;left:9px;}.back-corner.br{bottom:7px;right:9px;}
+.back-emoji{font-size:3rem;line-height:1;filter:drop-shadow(0 2px 8px rgba(200,149,106,.28));animation:floatCard 5s ease-in-out infinite;z-index:1;}
+@keyframes floatCard{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+.back-label{font-family:'Cormorant Garamond',serif;font-size:.68rem;font-style:italic;color:var(--rg);letter-spacing:.18em;z-index:1;}
+.back-petals{font-size:1rem;opacity:.35;letter-spacing:.18em;z-index:1;}
+
+/* FRONT */
+.card-front{
+  transform:rotateY(180deg);
+  border:1.5px solid rgba(200,149,106,.38);
+  box-shadow:0 0 0 1px rgba(200,149,106,.1),inset 0 0 38px rgba(200,149,106,.09),0 18px 55px rgba(60,40,20,.18);
+  display:flex;align-items:stretch;
+}
+.card-inner.flipped .card-front{animation:frontGlow 4s ease-in-out 1s infinite;}
+@keyframes frontGlow{
+  0%,100%{box-shadow:0 0 0 1px rgba(200,149,106,.1),inset 0 0 38px rgba(200,149,106,.09),0 18px 55px rgba(60,40,20,.18);}
+  50%{box-shadow:0 0 0 1.5px rgba(200,149,106,.4),inset 0 0 50px rgba(200,149,106,.16),0 0 28px rgba(200,149,106,.14),0 22px 60px rgba(60,40,20,.24);}
+}
+.front-frame{flex:1;margin:9px;border:1px solid rgba(200,149,106,.2);border-radius:11px;display:flex;flex-direction:column;align-items:center;padding:9px 6px;gap:5px;position:relative;}
+.front-frame::before{content:'✦';position:absolute;top:6px;left:7px;color:rgba(200,149,106,.32);font-size:6.5px;}
+.front-frame::after{content:'✦';position:absolute;bottom:6px;right:7px;color:rgba(200,149,106,.32);font-size:6.5px;}
+.card-roman{font-family:'Cormorant Garamond',serif;font-size:.48rem;font-style:italic;color:var(--muted);letter-spacing:.12em;}
+.card-art{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
+.card-emoji-main{font-size:clamp(2.4rem,6vw,3.6rem);line-height:1;filter:drop-shadow(0 2px 8px rgba(200,149,106,.32));animation:floatEmoji 4.5s ease-in-out 1s infinite;}
+@keyframes floatEmoji{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-4px) scale(1.02);}}
+.card-emoji-sub{font-size:clamp(.85rem,2vw,1.15rem);line-height:1;opacity:.6;letter-spacing:.08em;}
+.card-divider{width:50%;height:1px;background:linear-gradient(to right,transparent,rgba(200,149,106,.38),transparent);flex-shrink:0;}
+.card-name-text{font-family:'Cormorant Garamond',serif;font-size:clamp(.6rem,1.4vw,.78rem);font-weight:600;color:var(--dark);text-align:center;letter-spacing:.06em;line-height:1.3;}
+.card-energy-text{font-size:clamp(.4rem,.95vw,.52rem);color:var(--rg);text-align:center;letter-spacing:.05em;line-height:1.4;padding:0 2px;}
+
+/* SHIMMER */
+.shimmer-wrap{position:absolute;inset:0;border-radius:16px;overflow:hidden;pointer-events:none;display:none;}
+.shimmer-wrap::after{content:'';position:absolute;top:0;left:-100%;width:55%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,242,228,.42),transparent);animation:shimmerSlide 1.8s ease forwards;}
+@keyframes shimmerSlide{0%{left:-100%;}100%{left:200%;}}
+
+/* DRAW BTN */
+.draw-btn{padding:13px 48px;background:linear-gradient(135deg,rgba(200,149,106,.13),rgba(240,200,178,.18));border:1px solid var(--rg);color:var(--dark);font-family:'Noto Serif TC',serif;font-size:.86rem;letter-spacing:.35em;cursor:pointer;border-radius:2px;position:relative;overflow:hidden;transition:all .35s ease;touch-action:manipulation;}
+.draw-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(200,149,106,.18),rgba(240,200,178,.26));opacity:0;transition:opacity .3s;}
+.draw-btn:hover::before{opacity:1;}
+.draw-btn:hover{box-shadow:0 0 22px var(--rg-glow),0 5px 18px rgba(60,40,20,.1);transform:translateY(-2px);letter-spacing:.4em;}
+
+/* RESULT */
+.result-area{width:100%;max-width:660px;opacity:0;transform:translateY(18px);transition:opacity .7s ease .5s,transform .7s ease .5s;}
+.result-area.visible{opacity:1;transform:translateY(0);}
+.result-panel{background:rgba(253,249,245,.9);border:1px solid rgba(200,149,106,.2);border-radius:20px;padding:30px 28px;backdrop-filter:blur(14px);box-shadow:0 8px 40px rgba(60,40,20,.07);display:flex;flex-direction:column;gap:20px;}
+
+.result-header{display:flex;flex-direction:column;align-items:center;gap:5px;padding-bottom:18px;border-bottom:1px solid rgba(200,149,106,.14);}
+.r-fairy-name{font-family:'Cormorant Garamond',serif;font-size:1.65rem;font-weight:500;font-style:italic;color:var(--dark);letter-spacing:.06em;}
+.r-roman{font-family:'Cormorant Garamond',serif;font-size:.72rem;font-style:italic;color:var(--muted);letter-spacing:.18em;}
+.r-badge{display:inline-flex;align-items:center;gap:7px;padding:5px 15px;background:rgba(200,149,106,.09);border:1px solid rgba(200,149,106,.2);border-radius:100px;font-size:.65rem;color:var(--rg);letter-spacing:.14em;margin-top:4px;}
+
+.r-section{display:flex;flex-direction:column;gap:9px;}
+.r-label{font-size:.62rem;letter-spacing:.44em;color:var(--rg);font-weight:400;}
+.r-content{font-size:.86rem;color:var(--dark);line-height:1.78;letter-spacing:.05em;}
+.style-name{font-family:'Cormorant Garamond',serif;font-size:1.22rem;font-style:italic;font-weight:500;color:var(--dark);letter-spacing:.04em;display:block;margin-bottom:3px;}
+
+.swatches{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start;}
+.swatch{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.swatch-dot{width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(200,149,106,.22);box-shadow:0 3px 10px rgba(60,40,20,.1);position:relative;overflow:hidden;}
+.swatch-dot::after{content:'';position:absolute;top:4px;left:6px;width:10px;height:7px;background:rgba(255,255,255,.42);border-radius:50%;transform:rotate(-30deg);}
+.swatch-label{font-size:.56rem;color:var(--med);letter-spacing:.07em;text-align:center;max-width:50px;line-height:1.3;}
+
+.accent-box{padding:10px 14px;background:rgba(200,149,106,.06);border-left:2px solid var(--rg-light);border-radius:0 6px 6px 0;font-size:.8rem;color:var(--med);line-height:1.68;font-style:italic;}
+.vibe-text{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;color:var(--dark);line-height:1.72;letter-spacing:.04em;text-align:center;padding:0 8px;}
+.ritual-box{background:linear-gradient(135deg,rgba(240,200,178,.1),rgba(200,180,220,.07));border:1px solid rgba(200,149,106,.16);border-radius:12px;padding:15px 18px;font-size:.8rem;color:var(--med);line-height:1.78;letter-spacing:.05em;text-align:center;font-style:italic;}
+
+.r-divider{height:1px;background:linear-gradient(to right,transparent,rgba(200,149,106,.16),transparent);}
+
+.cta-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding-top:4px;}
+.reset-btn{padding:11px 30px;background:transparent;border:1px solid var(--rg);color:var(--dark);font-family:'Noto Serif TC',serif;font-size:.8rem;letter-spacing:.28em;cursor:pointer;border-radius:2px;transition:all .3s ease;touch-action:manipulation;}
+.reset-btn:hover{background:rgba(200,149,106,.11);box-shadow:0 3px 14px var(--rg-glow);transform:translateY(-1px);}
+.ghost-btn{padding:11px 26px;background:transparent;border:1px solid rgba(200,149,106,.28);color:var(--muted);font-family:'Noto Serif TC',serif;font-size:.76rem;letter-spacing:.2em;cursor:pointer;border-radius:2px;transition:all .3s ease;touch-action:manipulation;}
+.ghost-btn:hover{border-color:var(--rg);color:var(--dark);background:rgba(200,149,106,.05);}
+
+.footer-note{font-size:.58rem;color:rgba(160,144,136,.44);letter-spacing:.2em;text-align:center;}
+.hidden{display:none!important;}
+
+/* NAIL GALLERY */
+.nail-gallery{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+.nail-gallery::-webkit-scrollbar{height:3px;}
+.nail-gallery::-webkit-scrollbar-track{background:transparent;}
+.nail-gallery::-webkit-scrollbar-thumb{background:rgba(200,149,106,.3);border-radius:2px;}
+.nail-thumb-wrap{flex-shrink:0;border-radius:11px;overflow:hidden;background:var(--ivory);scroll-snap-align:start;position:relative;}
+.nail-thumb{width:160px;height:120px;object-fit:cover;object-position:center;display:block;opacity:0;transition:opacity .6s ease,transform .2s ease;cursor:zoom-in;}
+.nail-thumb.loaded{opacity:1;}
+.nail-thumb:hover{transform:scale(1.04);}
+.nail-img-credit{margin-top:5px;font-size:.54rem;color:var(--muted);letter-spacing:.1em;text-align:right;}
+.nail-img-credit a{color:var(--muted);text-decoration:none;}
+.nail-img-credit a:hover{color:var(--rg);}
+
+/* CLOSING MESSAGE */
+.closing-wrap{text-align:center;padding:18px 10px 6px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.closing-ornament{display:flex;align-items:center;gap:12px;width:100%;max-width:280px;color:var(--rg-light);font-size:.65rem;}
+.closing-ornament::before,.closing-ornament::after{content:'';flex:1;height:1px;background:linear-gradient(to right,transparent,var(--rg-light),transparent);}
+.closing-text{font-family:'Cormorant Garamond',serif;font-size:1.08rem;font-style:italic;color:var(--dark);line-height:1.85;letter-spacing:.05em;max-width:480px;}
+.closing-sign{font-size:.62rem;color:var(--muted);letter-spacing:.35em;margin-top:2px;}
+
+/* LIGHTBOX */
+.lightbox{position:fixed;inset:0;background:rgba(28,14,6,.92);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s ease;pointer-events:none;cursor:zoom-out;backdrop-filter:blur(6px);}
+.lightbox.open{opacity:1;pointer-events:all;}
+.lightbox-img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:10px;box-shadow:0 24px 90px rgba(0,0,0,.65);transform:scale(.9);transition:transform .4s cubic-bezier(.34,1.56,.64,1);}
+.lightbox.open .lightbox-img{transform:scale(1);}
+.lightbox-close{position:absolute;top:18px;right:22px;background:rgba(255,240,225,.12);border:1px solid rgba(255,240,225,.2);color:rgba(255,240,225,.8);font-size:1rem;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;touch-action:manipulation;}
+.lightbox-close:hover{background:rgba(255,240,225,.22);color:#fff;}
+.nail-img{cursor:zoom-in;}
+
+@media(max-width:580px){
+  .page{padding:34px 14px 60px;gap:24px;}
+  .result-panel{padding:20px 16px;}
+  .header h1{font-size:clamp(2rem,8vw,2.8rem);}
+  .swatches{gap:10px;}
+  .swatch-dot{width:32px;height:32px;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<canvas id="petalCanvas"></canvas>
+
+<main class="page">
+
+  <header class="header">
+    <span class="header-script">✦ Fairy Oracle ✦</span>
+    <h1>仙女下凡<span class="dot"> · </span>美甲神諭</h1>
+    <p class="header-sub">FAIRY DESCENDS &nbsp;·&nbsp; NAIL REVELATION</p>
+    <div class="ornament">🌸</div>
+  </header>
+
+  <p class="instr" id="instrText">
+    靜下心，閉上眼睛<br>
+    <em>讓仙女感受你此刻的能量</em><br>
+    準備好後，輕輕點牌召喚她
+  </p>
+
+  <div class="card-stage">
+    <div class="card-wrap" id="cardWrap" onclick="drawCard()" role="button" aria-label="抽牌">
+      <div class="card-inner" id="cardInner">
+
+        <!-- BACK -->
+        <div class="card-face card-back" id="cardBack">
+          <div class="back-inner">
+            <span class="back-corner tl">✦</span>
+            <span class="back-corner br">✦</span>
+            <div class="back-petals">🌸 🌺 🌸</div>
+            <div class="back-emoji">🧚‍♀️</div>
+            <div class="back-label">Fairy Oracle</div>
+            <div style="font-size:.6rem;color:rgba(200,149,106,.25);letter-spacing:.18em;">✦ ✦ ✦</div>
+          </div>
+        </div>
+
+        <!-- FRONT (populated by JS) -->
+        <div class="card-face card-front" id="cardFront">
+          <div class="front-frame">
+            <span class="card-roman" id="cRoman"></span>
+            <div class="card-art">
+              <div class="card-emoji-main" id="cEmojiMain"></div>
+              <div class="card-emoji-sub" id="cEmojiSub"></div>
+            </div>
+            <div class="card-divider"></div>
+            <div class="card-name-text" id="cName"></div>
+            <div class="card-energy-text" id="cEnergy"></div>
+          </div>
+          <div class="shimmer-wrap" id="shimmer"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <button class="draw-btn" id="drawBtn">✦ 召喚仙女 ✦</button>
+  </div>
+
+  <!-- RESULT -->
+  <section class="result-area hidden" id="resultArea">
+    <div class="result-panel">
+
+      <div class="result-header">
+        <div class="r-fairy-name" id="rName"></div>
+        <div class="r-roman" id="rRoman"></div>
+        <div class="r-badge">✦ <span id="rEnergy"></span> ✦</div>
+      </div>
+
+      <div class="nail-gallery" id="nailGallery"></div>
+      <p class="nail-img-credit">圖片來源：<a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a>（免費商用授權）</p>
+
+      <div class="r-section">
+        <div class="r-label">美甲風格</div>
+        <div class="r-content">
+          <span class="style-name" id="rStyle"></span>
+          <span id="rTechnique"></span>
+        </div>
+      </div>
+
+      <div class="r-divider"></div>
+
+      <div class="r-section">
+        <div class="r-label">今日靈感色系</div>
+        <div class="swatches" id="rSwatches"></div>
+      </div>
+
+      <div class="r-divider"></div>
+
+      <div class="r-section">
+        <div class="r-label">指甲裝飾建議</div>
+        <div class="accent-box" id="rAccent"></div>
+      </div>
+
+      <div class="vibe-text" id="rVibe"></div>
+
+      <div class="r-divider"></div>
+
+      <div class="r-section">
+        <div class="r-label">仙女儀式</div>
+        <div class="ritual-box" id="rRitual"></div>
+      </div>
+
+      <div class="closing-wrap">
+        <div class="closing-ornament">🌸</div>
+        <div class="closing-text" id="rClosing"></div>
+        <div class="closing-sign">— 仙女的祝福 —</div>
+      </div>
+
+      <div class="cta-row">
+        <button class="reset-btn" onclick="resetCard()">✦ 重新召喚 ✦</button>
+        <button class="ghost-btn" onclick="shareResult()">分享美甲靈感</button>
+      </div>
+
+    </div>
+  </section>
+
+  <p class="footer-note">✦ 美甲由仙女啟示，靈感由你創造 &nbsp;·&nbsp; Fairy Nail Oracle ✦</p>
+
+</main>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="event.stopPropagation();closeLightbox()" aria-label="關閉">✕</button>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="" onclick="event.stopPropagation()">
+</div>
+
+<script>
+const deck = [
+  {
+    name:'月光仙子',roman:'Luna Fae',
+    em:'🌙',sub:'✨🧚‍♀️',
+    bg:'linear-gradient(155deg,#EEF3F8 0%,#E4EAF5 60%,#DDE4F0 100%)',
+    energy:'靜謐 · 直覺 · 神秘感',
+    nail:{
+      style:'貝殼珠光暈染',
+      tech:'以透明基底暈染出月光質感，指尖輕透如真實月光倒映',
+      colors:[{name:'月光白',hex:'#F4F0EC'},{name:'銀河銀',hex:'#C4CBD6'},{name:'霜藍粉',hex:'#CDD8EE'}],
+      accent:'拇指或無名指點綴月牙形貼鑽，或細筆勾畫纖細星點',
+      vibe:'你是夜晚最安靜的光，不張揚卻讓人無法忽視',
+      ritual:'塗好指甲後，對著夜空或月光靜坐片刻，讓仙女的靜謐能量透過指尖流入心中'
+    }
+  },
+  {
+    name:'玫瑰女神',roman:'Rose Goddess',
+    em:'🌹',sub:'👑🌸',
+    bg:'linear-gradient(155deg,#F9EEF1 0%,#F4E4E8 60%,#EED8DE 100%)',
+    energy:'魅力 · 愛意 · 豐盛',
+    nail:{
+      style:'復古玫瑰金箔',
+      tech:'深玫瑰紅底色，搭配不規則金箔點染，打造復古奢華感',
+      colors:[{name:'深玫瑰紅',hex:'#C04868'},{name:'裸粉金',hex:'#E8C0A4'},{name:'古銅蜜金',hex:'#C89050'}],
+      accent:'無名指加立體玫瑰花飾，或金色蕾絲貼片',
+      vibe:'盛開如玫瑰，你的魅力是任何人都無法假裝看不見的',
+      ritual:'塗好後噴上你最喜歡的香水，讓玫瑰女神的豐盛磁場圍繞著你整天'
+    }
+  },
+  {
+    name:'星光仙靈',roman:'Stardust Sprite',
+    em:'⭐',sub:'🌟💫',
+    bg:'linear-gradient(155deg,#EEEEF8 0%,#E6E6F5 60%,#DDDDF2 100%)',
+    energy:'希望 · 閃耀 · 夢想成真',
+    nail:{
+      style:'星空點點漸層',
+      tech:'夜空深藍漸層至指尖銀粉，以細針點出星塵感，整體輕盈閃耀',
+      colors:[{name:'深宇宙藍',hex:'#384870'},{name:'星粉紫',hex:'#C8B8DC'},{name:'閃耀銀金',hex:'#D8C870'}],
+      accent:'星形亮片散落全甲，如真實星空在你指尖',
+      vibe:'你本來就是最亮的那顆星，只是需要一個讓人仰望的舞台',
+      ritual:'許一個願望，閉眼想像它透過指尖傳送到宇宙，靜靜等待宇宙回應'
+    }
+  },
+  {
+    name:'春之精靈',roman:'Spring Sprite',
+    em:'🌸',sub:'🦋🌿',
+    bg:'linear-gradient(155deg,#EEF8EE 0%,#E5F3E5 60%,#DCEEDE 100%)',
+    energy:'新生 · 喜悅 · 美好開始',
+    nail:{
+      style:'小碎花清新立體',
+      tech:'奶油白底，細筆手繪雛菊或小野花，點綴淡綠葉片，清新自然',
+      colors:[{name:'奶油白',hex:'#F8F0E4'},{name:'嫩芽粉綠',hex:'#C0D8B0'},{name:'蜜桃花瓣',hex:'#F0C0B0'}],
+      accent:'乾燥小花貼片，或手繪立體小雛菊',
+      vibe:'你就是這個季節最美的那朵花，自然而然，無需刻意',
+      ritual:'去公園或花市走走，感受春天的氣息，讓美甲成為你與自然的連結'
+    }
+  },
+  {
+    name:'水晶仙后',roman:'Crystal Queen',
+    em:'💎',sub:'👸🔮',
+    bg:'linear-gradient(155deg,#EEF6F8 0%,#E4F0F5 60%,#DCEAF2 100%)',
+    energy:'清透 · 權威 · 我即女王',
+    nail:{
+      style:'琉璃透明水晶感',
+      tech:'全透明凝膠底，加入極光粉末打磨，呈現3D水晶立體質感',
+      colors:[{name:'水晶透明',hex:'#EEF8FC'},{name:'極光藍粉',hex:'#B8D8F0'},{name:'鑽石亮銀',hex:'#D8DCEC'}],
+      accent:'指尖擺放水晶貼鑽或透明寶石，越奢越美',
+      vibe:'純淨而強大，透明是你最驕傲的樣子，你不需要隱藏任何東西',
+      ritual:'對著鏡子欣賞自己的美甲，大聲說一句今天最想對自己說的肯定話語'
+    }
+  },
+  {
+    name:'羽翼天使',roman:'Winged Angel',
+    em:'🕊️',sub:'🤍🪷',
+    bg:'linear-gradient(155deg,#FBF8F5 0%,#F6F0EB 60%,#F0E9E2 100%)',
+    energy:'純淨 · 守護 · 靈感降臨',
+    nail:{
+      style:'純白羽毛紋銀邊',
+      tech:'珍珠白底，細筆勾畫羽毛紋路，收邊以極細銀線勾勒，輕盈如天使',
+      colors:[{name:'天鵝白',hex:'#FAF7F4'},{name:'羽絨奶白',hex:'#F0EBE3'},{name:'天使銀',hex:'#D0D4DC'}],
+      accent:'拇指或中指加細羽毛飾品，或白色3D羽毛凝膠造型',
+      vibe:'純白不是空白，是所有光的總和，你擁有無限可能',
+      ritual:'深呼吸，想像白色光芒從頭頂流入，透過指尖向外散發給周圍的人'
+    }
+  },
+  {
+    name:'玉兔仙女',roman:'Jade Rabbit Fairy',
+    em:'🐰',sub:'🌸💮',
+    bg:'linear-gradient(155deg,#FDF0F4 0%,#F8E8EE 60%,#F4E0E8 100%)',
+    energy:'甜蜜 · 幸運 · 撒嬌的藝術',
+    nail:{
+      style:'夢幻蜜桃粉漸層',
+      tech:'粉嫩漸層從裸色過渡到草莓蜜桃，加入少量珠光提亮，甜蜜滿溢',
+      colors:[{name:'玫瑰蜜桃',hex:'#F4A898'},{name:'草莓奶昔',hex:'#F8C8C0'},{name:'珠光糖白',hex:'#FAF0F0'}],
+      accent:'愛心形貼鑽，或可愛蝴蝶結小飾品',
+      vibe:'可愛從來不是弱點，那是你最無敵的超能力',
+      ritual:'打電話給最愛的人，讓甜蜜的能量從指尖流入你們的關係'
+    }
+  },
+  {
+    name:'朝露精靈',roman:'Morning Dew Sprite',
+    em:'💧',sub:'🌿🌱',
+    bg:'linear-gradient(155deg,#F0F5EE 0%,#E8F0E6 60%,#E0EADE 100%)',
+    energy:'清新 · 輕盈 · 新的一天',
+    nail:{
+      style:'玻璃凝膠自然裸透',
+      tech:'超薄透明凝膠底，加入少量裸色增加膚色感，極光粉末輕掃呈現露水光澤',
+      colors:[{name:'晨露透明',hex:'#F4F0EA'},{name:'嫩葉薄荷',hex:'#C4D8BC'},{name:'清晨裸粉',hex:'#ECD4C0'}],
+      accent:'細透明線條勾勒葉脈圖案，自然系裝飾',
+      vibe:'簡單本身就是一種奢華，你的乾淨感是最強的吸引力',
+      ritual:'早晨用冷水洗臉，讓朝露的清新能量喚醒新的一天，從指尖開始'
+    }
+  },
+  {
+    name:'金鳳仙子',roman:'Golden Phoenix Fairy',
+    em:'🦅',sub:'✨🔥',
+    bg:'linear-gradient(155deg,#FBF2EC 0%,#F5E8DC 60%,#F0DFCE 100%)',
+    energy:'熱情 · 重生 · 鳳凰氣場',
+    nail:{
+      style:'金箔點綴珊瑚漸層',
+      tech:'珊瑚橘底色，不規則金箔片貼敷，焦糖棕收尾，熱情澎湃',
+      colors:[{name:'鳳羽珊瑚',hex:'#E87850'},{name:'24K金箔',hex:'#D4A840'},{name:'焦糖深棕',hex:'#B47040'}],
+      accent:'金箔不規則點綴，部分指甲加入燙金火焰紋路',
+      vibe:'你從火焰中誕生，所以你不怕任何高溫，那只是讓你更閃耀',
+      ritual:'點一根蠟燭，凝視火焰，感受鳳凰能量從指尖注入，今天無所畏懼'
+    }
+  },
+  {
+    name:'夢境守護者',roman:'Dream Guardian',
+    em:'🦄',sub:'💜🌙',
+    bg:'linear-gradient(155deg,#F4F0F8 0%,#EDE6F5 60%,#E6DDF2 100%)',
+    energy:'直覺 · 靈性 · 夢境引路',
+    nail:{
+      style:'紫夢星塵漸層',
+      tech:'淡紫底色漸層至深薰衣草，細散星塵銀粉點綴，如夢如幻',
+      colors:[{name:'淡丁香紫',hex:'#D4C0E4'},{name:'薰衣草夢',hex:'#B898D0'},{name:'星塵銀粉',hex:'#C8C8DC'}],
+      accent:'月牙形貼飾或小獨角獸圖案指甲貼',
+      vibe:'你的直覺從來不會出錯，那是仙女在你耳邊輕聲說話',
+      ritual:'睡前記錄夢境，帶著紫夢美甲進入夢鄉，讓守護者為你指路'
+    }
+  },
+  {
+    name:'彩虹仙靈',roman:'Rainbow Spirit',
+    em:'🌈',sub:'🦋🌸',
+    bg:'linear-gradient(155deg,#FDFAF0 0%,#F8F3E4 60%,#F3ECDA 100%)',
+    energy:'好運 · 繽紛 · 一切可能',
+    nail:{
+      style:'極光變色漸層',
+      tech:'使用極光粉或變色龍甲油，打造隨光線角度變幻的彩虹效果',
+      colors:[{name:'極光幻彩',hex:'#D8C8E8'},{name:'糖果蜜桃',hex:'#F4C0D0'},{name:'晴空藍',hex:'#B8D8F0'}],
+      accent:'每隻指甲使用不同糖果色，打造彩虹組合感',
+      vibe:'你的人生值得最繽紛的色彩，好運早就在轉角等你了',
+      ritual:'今天嘗試一件從來沒做過的事，讓彩虹仙靈帶來意外的驚喜'
+    }
+  },
+  {
+    name:'海之女神',roman:'Sea Goddess',
+    em:'🧜‍♀️',sub:'🌊💙',
+    bg:'linear-gradient(155deg,#EEF4F8 0%,#E4EEF5 60%,#DCE8F2 100%)',
+    energy:'自由 · 流動 · 女神上岸',
+    nail:{
+      style:'海洋貝殼珠光',
+      tech:'珊瑚色底搭配海藍漸層，貝殼珠光粉打出深海光澤',
+      colors:[{name:'珊瑚礁',hex:'#E89080'},{name:'深海藍',hex:'#5890C0'},{name:'貝殼珍珠',hex:'#F0E8D4'}],
+      accent:'貝殼形狀貼片或海星飾品，或藍色亮片點綴如浪花',
+      vibe:'你從深海而來，帶著神秘與力量，沒有人能定義你的邊界',
+      ritual:'喝一杯水，感受水流過身體，想像自己是從海洋升起的女神，充滿力量'
+    }
+  },
+  {
+    name:'冰雪女王',roman:'Ice Queen',
+    em:'❄️',sub:'👸🌨️',
+    bg:'linear-gradient(155deg,#EEF4F8 0%,#E4EFF5 60%,#DCEAF2 100%)',
+    energy:'冷靜 · 智慧 · 冰雪聰明',
+    nail:{
+      style:'冰裂紋凝膠冷光',
+      tech:'冰河藍底色，以開裂效果凝膠打造冰裂紋，霜白收邊，酷感十足',
+      colors:[{name:'冰河藍',hex:'#98C8DC'},{name:'霜雪白',hex:'#EEF4F8'},{name:'鋼鐵銀',hex:'#8898A8'}],
+      accent:'水晶透明貼鑽，或冰柱形長條飾品',
+      vibe:'你的冷靜不是冷漠，是最高境界的優雅，無懈可擊',
+      ritual:'今天對你最難做的決定，用最冷靜的眼光重新審視一遍，然後決定'
+    }
+  },
+  {
+    name:'花神仙子',roman:'Flora Goddess',
+    em:'🌺',sub:'🌸🏵️',
+    bg:'linear-gradient(155deg,#FBF0F5 0%,#F5E6EE 60%,#F0DCE8 100%)',
+    energy:'愛情 · 花開 · 幸福盛放',
+    nail:{
+      style:'3D立體花朵',
+      tech:'奶油粉底，手工製作凝膠立體花朵，薰衣草紫點綴，浪漫極致',
+      colors:[{name:'牡丹粉',hex:'#F0A0B8'},{name:'奶油鵝黃',hex:'#F5E8B8'},{name:'薰衣草',hex:'#C8B8E8'}],
+      accent:'立體玫瑰或牡丹花凝膠造型，讓指甲成為一座花園',
+      vibe:'你值得被最美的愛情盛開，花神早已替你準備好了那片土壤',
+      ritual:'買一束自己喜歡的花，讓花香圍繞你整天，敞開心接收愛情能量'
+    }
+  },
+  {
+    name:'黎明仙女',roman:'Dawn Fairy',
+    em:'🌅',sub:'🌟☀️',
+    bg:'linear-gradient(155deg,#FBF5EE 0%,#F6EDE4 60%,#F1E5DA 100%)',
+    energy:'光明 · 喜悅 · 好事來臨',
+    nail:{
+      style:'晨曦橘金暈染漸層',
+      tech:'從指根的珊瑚粉漸層到指尖的蜜金，模擬黎明時分的光譜',
+      colors:[{name:'晨曦橘',hex:'#F0A870'},{name:'蜜桃金',hex:'#E8C870'},{name:'珊瑚暖粉',hex:'#F0B8A0'}],
+      accent:'金色細線或太陽圖案點綴一枚指甲，代表今日的主角就是你',
+      vibe:'每一天都是新的黎明，你帶著光出現，周圍的人都感受得到',
+      ritual:'早晨曬5分鐘太陽，讓黎明仙女的光能透過你的指尖傳遞出去'
+    }
+  },
+  {
+    name:'暗夜精靈',roman:'Night Elf',
+    em:'🌑',sub:'🌙⭐',
+    bg:'linear-gradient(155deg,#F0EEF4 0%,#E8E6F0 60%,#E0DEEC 100%)',
+    energy:'神秘 · 魅力 · 暗黑覺醒',
+    nail:{
+      style:'深紫貓眼波紋',
+      tech:'深紫夜色底，貓眼磁石打出光澤波紋，星點銀粉散落，神秘迷人',
+      colors:[{name:'深紫夜',hex:'#483068'},{name:'宇宙暗黑',hex:'#201828'},{name:'星塵銀光',hex:'#C0C0D0'}],
+      accent:'貓眼磁石效果必備，搭配月牙形貼鑽',
+      vibe:'你的神秘感是你最大的武器，不需要解釋，只需要出現',
+      ritual:'夜晚靜坐，感受暗夜精靈的能量，思考你真正想要卻還沒說出口的事'
+    }
+  },
+  {
+    name:'銀月女神',roman:'Silver Moon Goddess',
+    em:'🌕',sub:'✨🪷',
+    bg:'linear-gradient(155deg,#F4F5F8 0%,#EDEEF4 60%,#E6E8F0 100%)',
+    energy:'冷豔 · 高雅 · 自帶月光',
+    nail:{
+      style:'液態銀鏡面漸層',
+      tech:'月光灰底，鏡面銀粉打磨至極致光澤，珍珠白收邊，冷豔高貴',
+      colors:[{name:'液態鏡銀',hex:'#C0C8D4'},{name:'月光霧灰',hex:'#D0D4DC'},{name:'珍珠奶白',hex:'#F0ECE8'}],
+      accent:'全甲鏡面效果，一指加月球浮雕貼片',
+      vibe:'月亮從不追著太陽跑，你也不用，你自帶引力',
+      ritual:'月圓之夜，對著月亮許下最深的心願，讓銀月女神親耳聽見'
+    }
+  },
+  {
+    name:'森林仙靈',roman:'Forest Spirit',
+    em:'🌿',sub:'🍃🦋',
+    bg:'linear-gradient(155deg,#F0F4EE 0%,#E8F0E6 60%,#E0EADE 100%)',
+    energy:'療癒 · 自然 · 回歸本質',
+    nail:{
+      style:'大地色毛絨奶茶啞光',
+      tech:'奶茶棕底，苔蘚綠細節點綴，絨面啞光處理打造森林大地質感',
+      colors:[{name:'奶茶棕',hex:'#B49878'},{name:'苔蘚綠',hex:'#789870'},{name:'深可可',hex:'#786058'}],
+      accent:'乾燥葉片貼飾，或手繪細葉脈線條',
+      vibe:'你不需要變成任何人，大地的力量就藏在你本來的樣子裡',
+      ritual:'摸一摸植物，感受土地，讓森林仙靈幫你接地氣，清除多餘能量'
+    }
+  },
+  {
+    name:'愛神維納斯',roman:'Venus',
+    em:'💝',sub:'🌹💕',
+    bg:'linear-gradient(155deg,#FBF2F4 0%,#F5E8EC 60%,#F0DEE4 100%)',
+    energy:'愛意 · 桃花 · 被愛磁場',
+    nail:{
+      style:'法式心形玫瑰金',
+      tech:'裸粉底色，玫瑰金法式邊，無名指加心形貼鑽，愛意滿溢',
+      colors:[{name:'裸玫粉',hex:'#EED4C8'},{name:'玫瑰金邊',hex:'#D89070'},{name:'愛心紅',hex:'#E06880'}],
+      accent:'心形貼鑽，小玫瑰造型，蝴蝶結飾品',
+      vibe:'你已經值得被愛了，不是因為你做了什麼，而是因為你存在',
+      ritual:'寫一封短信給自己最想要的愛情狀態，讓維納斯傳遞你的心意'
+    }
+  },
+  {
+    name:'火焰仙子',roman:'Flame Fairy',
+    em:'🔥',sub:'💛✨',
+    bg:'linear-gradient(155deg,#FBF0EC 0%,#F5E6DE 60%,#F0DCD4 100%)',
+    energy:'熱情 · 自信 · 燃起力量',
+    nail:{
+      style:'橘紅火焰金收邊漸層',
+      tech:'正紅底部漸層至橘焰指尖，炙金細線收邊，熱情爆棚',
+      colors:[{name:'烈焰紅',hex:'#E03040'},{name:'橘焰',hex:'#F07030'},{name:'炙金',hex:'#E8B040'}],
+      accent:'金色細線勾勒火焰紋路，拇指加火焰圖案',
+      vibe:'你不是在燃燒，你就是那把火，溫暖而有力量，燃亮所有人',
+      ritual:'大聲唱一首歌，或跳一段舞，讓火焰仙子的熱情爆發出來，今天就是你'
+    }
+  },
+  {
+    name:'天空女神',roman:'Sky Goddess',
+    em:'☁️',sub:'🌤️🕊️',
+    bg:'linear-gradient(155deg,#EEF4F8 0%,#E6EFF5 60%,#DEEAF2 100%)',
+    energy:'自由 · 輕盈 · 無限可能',
+    nail:{
+      style:'空氣感透明凝膠雲朵',
+      tech:'超薄空氣白透明凝膠，輕掃淡天藍，如雲朵的輕盈質感，清爽透薄',
+      colors:[{name:'空氣白',hex:'#FAFAF8'},{name:'雲朵藍',hex:'#D0E8F5'},{name:'天光奶白',hex:'#F5F8FA'}],
+      accent:'超輕薄雲朵造型凝膠，或白色小雲圖案點綴',
+      vibe:'輕盈的你才是最強大的，放下重量，你可以飛得比任何人都高',
+      ritual:'今天放下一件讓你感到沉重的事，讓天空女神帶走它，你值得輕鬆'
+    }
+  },
+  {
+    name:'命運三女神',roman:'The Three Fates',
+    em:'⚖️',sub:'🌟🔮',
+    bg:'linear-gradient(155deg,#F8F5EE 0%,#F2EDEA 60%,#ECE8E2 100%)',
+    energy:'格局 · 翻轉 · 命運在你手',
+    nail:{
+      style:'黑白大理石22K金線',
+      tech:'純白底加手繪大理石紋路，22K金線細勾，收尾極致優雅，格局盡顯',
+      colors:[{name:'純白大理石',hex:'#F8F6F4'},{name:'命運黑',hex:'#181820'},{name:'22K金線',hex:'#C8A040'}],
+      accent:'金色滴膠幾何形貼片，或手繪金色幾何線條',
+      vibe:'命運從不是隨機的，每一個選擇都是你自己書寫的劇本',
+      ritual:'今天做一個你一直猶豫的決定，讓三女神見證你的勇氣，不要再等了'
+    }
+  }
+];
+
+// Petal canvas animation
+const canvas = document.getElementById('petalCanvas');
+const ctx = canvas.getContext('2d');
+let petals = [];
+let W, H;
+
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+resize();
+window.addEventListener('resize', resize);
+
+const petalColors = ['#F0C8C0','#F5E0D0','#ECC8D8','#F8F0E4','#F0D8E8','#E8D8F0'];
+
+function mkPetal() {
+  return {
+    x: Math.random() * W, y: -20,
+    size: Math.random() * 8 + 4,
+    speed: Math.random() * 1.2 + 0.4,
+    drift: (Math.random() - 0.5) * 0.8,
+    rot: Math.random() * Math.PI * 2,
+    rotSpeed: (Math.random() - 0.5) * 0.04,
+    alpha: Math.random() * 0.35 + 0.1,
+    color: petalColors[Math.floor(Math.random() * petalColors.length)],
+    type: Math.random() < 0.25 ? 'star' : 'petal'
+  };
+}
+
+function drawOnePetal(p) {
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  ctx.rotate(p.rot);
+  ctx.globalAlpha = p.alpha;
+  if (p.type === 'star') {
+    ctx.fillStyle = '#D8A880';
+    ctx.beginPath();
+    for (let i = 0; i < 8; i++) {
+      const a = (i * Math.PI) / 4;
+      const r = i % 2 === 0 ? p.size : p.size * 0.35;
+      i === 0 ? ctx.moveTo(Math.cos(a)*r, Math.sin(a)*r) : ctx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
+    }
+    ctx.closePath();
+    ctx.fill();
+  } else {
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, p.size * 0.38, p.size, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function animatePetals() {
+  ctx.clearRect(0, 0, W, H);
+  if (Math.random() < 0.055 && petals.length < 38) petals.push(mkPetal());
+  petals = petals.filter(p => p.y < H + 30);
+  for (const p of petals) {
+    p.y += p.speed; p.x += p.drift; p.rot += p.rotSpeed;
+    drawOnePetal(p);
+  }
+  requestAnimationFrame(animatePetals);
+}
+animatePetals();
+
+// Card logic
+let drawn = false;
+let currentCard = null;
+
+function drawCard() {
+  if (drawn) return;
+  drawn = true;
+
+  currentCard = deck[Math.floor(Math.random() * deck.length)];
+  const c = currentCard;
+
+  // Set card front style
+  document.getElementById('cardFront').style.background = c.bg;
+  document.getElementById('cRoman').textContent = c.roman;
+  document.getElementById('cEmojiMain').textContent = c.em;
+  document.getElementById('cEmojiSub').textContent = c.sub;
+  document.getElementById('cName').textContent = c.name;
+  document.getElementById('cEnergy').textContent = c.energy;
+
+  // Flip
+  document.getElementById('cardInner').classList.add('flipped');
+  document.getElementById('drawBtn').classList.add('hidden');
+  document.getElementById('instrText').innerHTML = '仙女已降臨 <em>· 美甲啟示為你揭曉 ·</em>';
+
+  // Shimmer
+  const sh = document.getElementById('shimmer');
+  sh.style.display = 'block';
+  setTimeout(() => { sh.style.display = 'none'; }, 2200);
+
+  // Show result
+  setTimeout(() => showResult(c), 1200);
+}
+
+// Pexels photo ID arrays — 5 per card (different nail styles, same theme)
+const cardImgs = {
+  '月光仙子':   [10420563, 9393229, 9697755, 12653044, 15149202],
+  '玫瑰女神':   [939836, 939835, 34835287, 34835280, 34835292],
+  '星光仙靈':   [10632142, 34835283, 17280274, 26893737, 28712961],
+  '春之精靈':   [23385307, 8802806, 18444405, 17471377, 20758448],
+  '水晶仙后':   [34997566, 13038494, 34997575, 34941684, 6941115],
+  '羽翼天使':   [34997574, 34997575, 34997561, 15923916, 35103940],
+  '玉兔仙女':   [36655811, 939834, 20715643, 6774877, 6774348],
+  '朝露精靈':   [6941115, 35103940, 15923916, 34941684, 35491156],
+  '金鳳仙子':   [11124899, 11124894, 1328535, 11124884, 18066013],
+  '夢境守護者': [10944916, 13721038, 12169848, 5042305, 18192260],
+  '彩虹仙靈':   [28713174, 1149347, 5871823, 11124918, 15149202],
+  '海之女神':   [34971909, 9393229, 9697755, 29004934, 12653044],
+  '冰雪女王':   [34971940, 9697759, 18192260, 12653044, 34971909],
+  '花神仙子':   [7118662, 8802806, 34885842, 18619076, 17471377],
+  '黎明仙女':   [5802584, 17389258, 7683058, 34871713, 34871555],
+  '暗夜精靈':   [8669647, 11814032, 8259423, 8250144, 29144422],
+  '銀月女神':   [32334805, 9697759, 5597, 36207029, 6168216],
+  '森林仙靈':   [13277177, 23385307, 20758448, 6774343, 7683058],
+  '愛神維納斯': [34997561, 34997574, 34997575, 34997562, 35031987],
+  '火焰仙子':   [34871711, 7683058, 34871555, 34871556, 34871713],
+  '天空女神':   [939834, 36655811, 6941115, 15923916, 35103940],
+  '命運三女神': [18730147, 34835304, 34835305, 8250144, 8669647],
+};
+
+const cardClosings = {
+  '月光仙子':   '願月光永遠照在你最需要光的地方，黑暗只是另一種安靜。',
+  '玫瑰女神':   '帶著玫瑰的香氣離去，讓世界記得你來過的樣子。',
+  '星光仙靈':   '你許下的每一個願望，都已被星星記住了。',
+  '春之精靈':   '每一次新的開始，都是宇宙給你量身準備的禮物。',
+  '水晶仙后':   '你的透明是你的力量，清澈從來不是脆弱，而是勇氣。',
+  '羽翼天使':   '天使一直都在守護著你，只是今天，你就是那位天使。',
+  '玉兔仙女':   '甜蜜的人總是被愛先找到，今天也不例外。',
+  '朝露精靈':   '輕盈地出發吧，此刻的你已經完整而美好。',
+  '金鳳仙子':   '鳳凰每一次升起，都比上一次更耀眼。今天輪到你了。',
+  '夢境守護者': '夢境是靈魂說話的方式，你的直覺從來不會說謊。',
+  '彩虹仙靈':   '雨過之後，屬於你的彩虹正在趕來的路上。',
+  '海之女神':   '你可以深邃如大海，也可以平靜如湖面，兩者都是你的真實。',
+  '冰雪女王':   '冷靜不是距離，是你最高貴的處世之道，無懈可擊。',
+  '花神仙子':   '愛情早已在路上，你只需要繼續盛開，它自然會找到你。',
+  '黎明仙女':   '帶著黎明的光出門，你所到之處皆是晴天。',
+  '暗夜精靈':   '最深的夜裡，才能看見最亮的星。你，就是那顆星。',
+  '銀月女神':   '月亮不需要解釋自己的陰晴圓缺，你也不需要。',
+  '森林仙靈':   '大地永遠承接著你，無論你走多遠，根都在這裡。',
+  '愛神維納斯': '你值得被以你夢想的方式去愛，不多也不少，剛剛好。',
+  '火焰仙子':   '熊熊燃燒吧，那是你最真實也最美麗的模樣。',
+  '天空女神':   '放開手，天空是你本來就屬於的地方，去飛吧。',
+  '命運三女神': '命運的針線從不浪費任何一段線頭，你所經歷的，都有意義。',
+};
+
+function showResult(c) {
+  // Nail photo gallery
+  const gallery = document.getElementById('nailGallery');
+  gallery.innerHTML = '';
+  const ids = cardImgs[c.name] || [];
+  ids.forEach((id, i) => {
+    const thumbUrl = `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=340&h=220&fit=crop`;
+    const hqUrl   = `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=1400&h=900&fit=crop`;
+    const wrap = document.createElement('div');
+    wrap.className = 'nail-thumb-wrap';
+    const img = document.createElement('img');
+    img.className = 'nail-thumb';
+    img.alt = `${c.name} 美甲靈感 ${i + 1}`;
+    img.loading = 'lazy';
+    img.onload = () => img.classList.add('loaded');
+    img.onerror = () => { wrap.style.display = 'none'; };
+    img.onclick = () => openLightbox(hqUrl, img.alt);
+    img.src = thumbUrl;
+    if (img.complete && img.naturalWidth > 0) img.classList.add('loaded');
+    wrap.appendChild(img);
+    gallery.appendChild(wrap);
+  });
+
+  document.getElementById('rName').textContent = c.name;
+  document.getElementById('rRoman').textContent = c.roman;
+  document.getElementById('rEnergy').textContent = c.energy;
+  document.getElementById('rStyle').textContent = c.nail.style;
+  document.getElementById('rTechnique').textContent = c.nail.tech;
+  document.getElementById('rAccent').textContent = c.nail.accent;
+  document.getElementById('rVibe').textContent = '✦ ' + c.nail.vibe + ' ✦';
+  document.getElementById('rRitual').textContent = c.nail.ritual;
+
+  const sw = document.getElementById('rSwatches');
+  sw.innerHTML = '';
+  c.nail.colors.forEach(col => {
+    const div = document.createElement('div');
+    div.className = 'swatch';
+    div.innerHTML = `<div class="swatch-dot" style="background:${col.hex}"></div><span class="swatch-label">${col.name}</span>`;
+    sw.appendChild(div);
+  });
+
+  // Closing message
+  document.getElementById('rClosing').textContent = cardClosings[c.name] || '';
+
+  const ra = document.getElementById('resultArea');
+  ra.classList.remove('hidden');
+  requestAnimationFrame(() => requestAnimationFrame(() => ra.classList.add('visible')));
+}
+
+function resetCard() {
+  drawn = false;
+  currentCard = null;
+
+  document.getElementById('cardInner').classList.remove('flipped');
+  document.getElementById('drawBtn').classList.remove('hidden');
+  document.getElementById('instrText').innerHTML = '靜下心，閉上眼睛<br><em>讓仙女感受你此刻的能量</em><br>準備好後，輕輕點牌召喚她';
+
+  const ra = document.getElementById('resultArea');
+  ra.classList.remove('visible');
+  setTimeout(() => ra.classList.add('hidden'), 750);
+}
+
+function openLightbox(src, alt) {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  lbImg.src = src;
+  lbImg.alt = alt;
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+function shareResult() {
+  if (!currentCard) return;
+  const c = currentCard;
+  const text = `✨ 仙女下凡 · 美甲神諭 ✨\n\n今日仙女：${c.name}\n美甲風格：${c.nail.style}\n靈感色系：${c.nail.colors.map(x=>x.name).join('、')}\n\n✦ ${c.nail.vibe} ✦`;
+  if (navigator.share) {
+    navigator.share({ title: '仙女下凡 · 美甲神諭', text }).catch(() => {});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => alert('✦ 已複製到剪貼簿，去分享給閨蜜吧！'));
+  }
+}
+
+// Allow clicking the card itself too
+document.getElementById('cardWrap').addEventListener('click', drawCard);
+</script>
+</body>
+</html>
