@@ -833,6 +833,19 @@ function resetCard() {
   document.getElementById('drawBtn').classList.remove('hidden');
   document.getElementById('instrText').innerHTML = '靜下心，閉上眼睛<br><em>讓仙女感受你此刻的能量</em><br>準備好後，輕輕點牌召喚她';
 
+  // 清空上一次的所有內容
+  document.getElementById('nailGallery').innerHTML = '';
+  document.getElementById('rName').textContent = '';
+  document.getElementById('rRoman').textContent = '';
+  document.getElementById('rEnergy').textContent = '';
+  document.getElementById('rStyle').textContent = '';
+  document.getElementById('rTechnique').textContent = '';
+  document.getElementById('rAccent').textContent = '';
+  document.getElementById('rVibe').textContent = '';
+  document.getElementById('rRitual').textContent = '';
+  document.getElementById('rSwatches').innerHTML = '';
+  document.getElementById('rClosing').textContent = '';
+
   const ra = document.getElementById('resultArea');
   ra.classList.remove('visible');
   setTimeout(() => ra.classList.add('hidden'), 750);
