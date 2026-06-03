@@ -1068,48 +1068,52 @@ function drawNails(ctx, landmarks, w, h) {
     const tip = landmarks[tipIdx];
     const dip = landmarks[AR_DIPS[i]];
 
-    // Mirror X to match selfie-flipped canvas
     const tx = (1 - tip.x) * w, ty = tip.y * h;
     const dx = (1 - dip.x) * w, dy = dip.y * h;
     const seg = Math.hypot(tx - dx, ty - dy);
-    if (seg < 6) return; // landmark too small / occluded
+    if (seg < 6) return;
 
-    const nH = seg * 0.9, nW = seg * 0.64;
-    const alpha = Math.atan2(ty - dy, tx - dx); // DIP→TIP direction
-    const angle = alpha - Math.PI / 2;           // rotate so nail height aligns with finger
-    // Nail centre: from tip, shift 30% of nH toward DIP (nail sits on finger, not past tip)
-    const cx = tx - Math.cos(alpha) * nH * 0.3;
-    const cy = ty - Math.sin(alpha) * nH * 0.3;
+    const nH = seg * 0.88, nW = seg * 0.68;
+    const alpha = Math.atan2(ty - dy, tx - dx);
+    const angle = alpha - Math.PI / 2;
+    const cx = tx - Math.cos(alpha) * nH * 0.28;
+    const cy = ty - Math.sin(alpha) * nH * 0.28;
 
     ctx.save();
     ctx.translate(cx, cy);
     ctx.rotate(angle);
 
-    // Rounded-rect nail shape
-    const hw = nW / 2, hh = nH / 2, rad = hw * 0.55;
+    const hw = nW / 2, hh = nH / 2;
+
+    // Bézier nail shape:
+    //   -hh = free edge (top, arched outward)
+    //   +hh = cuticle (bottom, concave inward)
     ctx.beginPath();
-    ctx.moveTo(-hw + rad, -hh);
-    ctx.lineTo(hw - rad, -hh);
-    ctx.quadraticCurveTo(hw, -hh, hw, -hh + rad);
-    ctx.lineTo(hw, hh - rad);
-    ctx.quadraticCurveTo(hw, hh, hw - rad, hh);
-    ctx.lineTo(-hw + rad, hh);
-    ctx.quadraticCurveTo(-hw, hh, -hw, hh - rad);
-    ctx.lineTo(-hw, -hh + rad);
-    ctx.quadraticCurveTo(-hw, -hh, -hw + rad, -hh);
+    ctx.moveTo(-hw * 0.8, hh);                                           // cuticle left
+    ctx.quadraticCurveTo(0, hh * 0.84, hw * 0.8, hh);                   // cuticle arc (concave)
+    ctx.bezierCurveTo(hw * 0.93, hh * 0.42, hw * 0.9, -hh * 0.32, hw * 0.78, -hh * 0.9);   // right side
+    ctx.quadraticCurveTo(0, -hh * 1.07, -hw * 0.78, -hh * 0.9);        // free edge arch (convex)
+    ctx.bezierCurveTo(-hw * 0.9, -hh * 0.32, -hw * 0.93, hh * 0.42, -hw * 0.8, hh);        // left side
     ctx.closePath();
 
-    // Colour fill with radial gradient for depth
-    const grad = ctx.createRadialGradient(0, -hh * 0.25, 0, 0, hh * 0.2, hw * 1.4);
-    grad.addColorStop(0, `rgba(${r},${g},${b},0.9)`);
-    grad.addColorStop(1, `rgba(${r},${g},${b},0.72)`);
+    // Radial gradient: brighter near center-top, darker toward edges
+    const grad = ctx.createRadialGradient(hw * 0.08, -hh * 0.18, 0, 0, hh * 0.25, hw * 1.5);
+    grad.addColorStop(0,   `rgba(${r},${g},${b},0.94)`);
+    grad.addColorStop(0.55,`rgba(${r},${g},${b},0.83)`);
+    grad.addColorStop(1,   `rgba(${r},${g},${b},0.66)`);
     ctx.fillStyle = grad;
     ctx.fill();
 
-    // Specular shine
+    // Main specular — elongated oval following nail length
     ctx.beginPath();
-    ctx.ellipse(-hw * 0.08, -hh * 0.3, hw * 0.22, hh * 0.17, -0.15, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255,255,255,0.38)';
+    ctx.ellipse(-hw * 0.05, -hh * 0.18, hw * 0.15, hh * 0.3, -0.08, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.46)';
+    ctx.fill();
+
+    // Secondary micro-highlight near tip corner
+    ctx.beginPath();
+    ctx.ellipse(-hw * 0.24, -hh * 0.5, hw * 0.06, hh * 0.09, 0, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.26)';
     ctx.fill();
 
     ctx.restore();
