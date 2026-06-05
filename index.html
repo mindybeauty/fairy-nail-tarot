@@ -1010,6 +1010,82 @@ async function openAR() {
   startARLoop(video);
 }
 
+// ONNX nail segmentation state
+let nailSession  = null;
+let segCanvas    = null; // reusable 128×128 offscreen canvas
+let isSegmenting = false;
+
+async function initNailModel() {
+  if (nailSession) return;
+  try {
+    window.ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.18.0/dist/';
+    nailSession = await window.ort.InferenceSession.create('nail_unet.onnx', {
+      executionProviders: ['wasm']
+    });
+    segCanvas = document.createElement('canvas');
+    segCanvas.width = 128; segCanvas.height = 128;
+    document.getElementById('arHint').textContent = '✦ ML 模型已就緒';
+  } catch(e) {
+    console.warn('Nail ONNX model failed, using Bézier fallback', e);
+  }
+}
+
+function getFingerCrop(landmarks, tipIdx, dipIdx, w, h) {
+  const tip = landmarks[tipIdx], dip = landmarks[dipIdx];
+  const tx = (1 - tip.x) * w, ty = tip.y * h;
+  const dx = (1 - dip.x) * w, dy = dip.y * h;
+  const seg = Math.hypot(tx - dx, ty - dy);
+  if (seg < 8) return null;
+  const cx = tx * 0.55 + dx * 0.45;
+  const cy = ty * 0.55 + dy * 0.45;
+  const size = Math.round(seg * 2.8);
+  const x = Math.max(0, Math.round(cx - size / 2));
+  const y = Math.max(0, Math.round(cy - size / 2));
+  return { x, y, w: Math.min(w - x, size), h: Math.min(h - y, size) };
+}
+
+async function segmentFinger(srcCanvas, crop) {
+  const sc = segCanvas.getContext('2d');
+  sc.clearRect(0, 0, 128, 128);
+  sc.drawImage(srcCanvas, crop.x, crop.y, crop.w, crop.h, 0, 0, 128, 128);
+  const px = sc.getImageData(0, 0, 128, 128).data;
+  const input = new Float32Array(3 * 128 * 128);
+  for (let i = 0; i < 128 * 128; i++) {
+    input[i]           = px[i * 4]     / 127.5 - 1;
+    input[128*128 + i] = px[i * 4 + 1] / 127.5 - 1;
+    input[256*128 + i] = px[i * 4 + 2] / 127.5 - 1;
+  }
+  const tensor = new window.ort.Tensor('float32', input, [1, 3, 128, 128]);
+  const out = await nailSession.run({ input: tensor });
+  return out.output.data; // Float32Array 128×128
+}
+
+function applySegMask(ctx, maskData, crop, r, g, b) {
+  const sc = segCanvas.getContext('2d');
+  const img = sc.createImageData(128, 128);
+  for (let i = 0; i < 128 * 128; i++) {
+    const c = maskData[i];
+    img.data[i*4]   = r;
+    img.data[i*4+1] = g;
+    img.data[i*4+2] = b;
+    img.data[i*4+3] = c > 0.45 ? Math.round(Math.min(0.9, c + 0.08) * 255) : 0;
+  }
+  sc.putImageData(img, 0, 0);
+  ctx.drawImage(segCanvas, crop.x, crop.y, crop.w, crop.h);
+}
+
+async function drawNailsML(ctx, landmarks, w, h, srcCanvas) {
+  const { r, g, b } = hexToRgb(arColor);
+  for (let i = 0; i < AR_TIPS.length; i++) {
+    const crop = getFingerCrop(landmarks, AR_TIPS[i], AR_DIPS[i], w, h);
+    if (!crop) continue;
+    try {
+      const mask = await segmentFinger(srcCanvas, crop);
+      applySegMask(ctx, mask, crop, r, g, b);
+    } catch {}
+  }
+}
+
 function startARLoop(video) {
   const canvas  = document.getElementById('arCanvas');
   const ctx     = canvas.getContext('2d');
@@ -1021,21 +1097,42 @@ function startARLoop(video) {
       locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`
     });
     arHands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.7, minTrackingConfidence: 0.5 });
-    arHands.onResults(results => {
+    arHands.onResults(async results => {
       loading.style.display = 'none';
       const w = canvas.width  = video.videoWidth  || 640;
       const h = canvas.height = video.videoHeight || 480;
 
-      // Draw mirrored video frame (selfie feel)
       ctx.save(); ctx.scale(-1, 1); ctx.translate(-w, 0);
       ctx.drawImage(results.image, 0, 0, w, h);
       ctx.restore();
 
       const detected = results.multiHandLandmarks?.length > 0;
-      hint.textContent = detected ? '✦ 仙女看見你的手了' : '將手放在鏡頭前';
+      const usingML = !!nailSession;
+      hint.textContent = detected
+        ? (usingML ? '✦ ML 輪廓偵測中' : '✦ 仙女看見你的手了')
+        : '將手放在鏡頭前';
       hint.className = 'ar-hint' + (detected ? ' detected' : '');
-      if (detected) drawNails(ctx, results.multiHandLandmarks[0], w, h);
+
+      if (!detected) return;
+      const lm = results.multiHandLandmarks[0];
+
+      if (usingML && !isSegmenting) {
+        isSegmenting = true;
+        try { await drawNailsML(ctx, lm, w, h, canvas); }
+        catch {}
+        finally { isSegmenting = false; }
+      } else if (!usingML) {
+        drawNails(ctx, lm, w, h);
+      }
     });
+  }
+
+  // Load ONNX Runtime + nail model in background (non-blocking)
+  if (typeof window.ort === 'undefined') {
+    loadScript('https://cdn.jsdelivr.net/npm/onnxruntime-web@1.18.0/dist/ort.min.js')
+      .then(() => initNailModel()).catch(() => {});
+  } else {
+    initNailModel();
   }
 
   arRun = true;
